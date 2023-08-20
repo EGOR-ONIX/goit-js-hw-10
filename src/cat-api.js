@@ -11,16 +11,11 @@ const instance = axios.create({
 });
 instance.defaults.headers.common['x-api-key'] = API_KEY;
 
-export function fetchBreeds() {
-  const listURL = '/breeds';
+// export function fetchBreeds() {
+//   const listURL = '/breeds';
 
-  return instance.get(listURL).then(resp => {
-    if (resp.status >= 400) {
-      throw new Error(resp.statusText);
-    }
-    return resp.data;
-  });
-}
+//   return instance.get(listURL).then(resp => resp.data);
+// }
 
 export function fetchCatByBreed(breedId) {
   const catURL = '/images/search';
@@ -28,30 +23,26 @@ export function fetchCatByBreed(breedId) {
     breed_ids: breedId,
   });
 
-  return instance.get(`${catURL}?${params}`).then(resp => {
-    if (resp.status >= 400) {
-      throw new Error(resp.statusText);
-    }
-    return resp.data;
-  });
+  return instance.get(`${catURL}?${params}`).then(resp => resp.data);
 }
 
 //* FETCH()
 
-// export function fetchBreeds() {
-//   const listURL = '/breeds';
-//   const params = new URLSearchParams({
-//     api_key: API_KEY,
-//   });
+export function fetchBreeds() {
+  const listURL = '/breeds';
+  const params = new URLSearchParams({
+    api_key: API_KEY,
+  });
 
-//   return fetch(`${BASE_URL + listURL}?${params}`).then(resp => {
-//     if (!resp.ok) {
-//       throw new Error(resp.statusText);
-//     }
+  return fetch(`${BASE_URL + listURL}?${params}`).then(resp => {
+    console.dir(resp);
+    if (!resp.ok) {
+      throw new Error(resp.statusText);
+    }
 
-//     return resp.json();
-//   });
-// }
+    return resp.json();
+  });
+}
 
 // export function fetchCatByBreed(breedId) {
 //   const catURL = '/images/search';
@@ -60,7 +51,7 @@ export function fetchCatByBreed(breedId) {
 //     breed_ids: breedId,
 //   });
 
-//   return fetch(`${BASE_URL + catURL}${params}`).then(resp => {
+//   return fetch(`${BASE_URL + catURL}?${params}`).then(resp => {
 //     if (!resp.ok) {
 //       throw new Error(resp.statusText);
 //     }

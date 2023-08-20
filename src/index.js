@@ -1,4 +1,4 @@
-import { fetchBreeds, fetchCatByBreed } from './cat-api';
+import { fetchBreeds, fetchCatByBreed } from './cat-api.js';
 import { Notify } from 'notiflix';
 import SlimSelect from 'slim-select';
 // import
@@ -10,20 +10,17 @@ const refs = {
   catBox: document.querySelector('.cat-info'),
 };
 
-// First loading. Add class
-toggleVisuallyHiddenClass(refs.errorMessage);
-toggleVisuallyHiddenClass(refs.breedSelect);
-
 fetchBreeds()
-  .then(data => {
-    const arrBreedsId = [];
-    data.forEach(element => {
-      arrBreedsId.push({ text: element.name, value: element.id });
-    });
+  .then(breeds => {
+    const markup = breeds.reduce(
+      (acc, { name, id }) => acc + `<option value="${id}">${name}</option>`,
+      ''
+    );
+
+    refs.breedSelect.innerHTML = markup;
 
     new SlimSelect({
       select: refs.breedSelect,
-      data: arrBreedsId,
     });
 
     // Add class
@@ -41,9 +38,11 @@ function showBoxCat(event) {
   // Lodaing info
   toggleVisuallyHiddenClass(refs.loaderMessage);
 
+  refs.catBox.classList.remove('visually-hidden');
+
   fetchCatByBreed(event.currentTarget.value)
-    .then(data => {
-      const markup = data.reduce(
+    .then(breed => {
+      const markup = breed.reduce(
         (acc, { url, width, breeds: [{ description, name, temperament }] }) =>
           acc +
           `
@@ -65,7 +64,7 @@ function showBoxCat(event) {
 }
 
 function onFetchError() {
-  // Remuve class
+  // Add class
   toggleVisuallyHiddenClass(refs.breedSelect);
   toggleVisuallyHiddenClass(refs.loaderMessage);
 
